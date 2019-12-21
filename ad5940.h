@@ -33,10 +33,12 @@
 #define AD5940LIB_VER_PATCH       1    /**< Path number */
 #define AD5940LIB_VER   (AD5940LIB_VER_MAJOR<<16)|(AD5940LIB_VER_MINOR<<8)|(AD5940LIB_VER_PATCH)
 
-#define ADI_DEBUG   /**< Comment this line to remove debug info. */
+//#define ADI_DEBUG   /**< Comment this line to remove debug info. */
 
 #ifdef ADI_DEBUG
+#ifndef ADI_Print
 #define ADI_Print printf   /**< Select the method to print out debug message */
+#endif
 #endif
 
 #if defined(CHIPSEL_M355) && defined(CHIPSEL_594X)
@@ -4901,6 +4903,8 @@ void      AD5940_ReadWriteNBytes(unsigned char *pSendBuffer,unsigned char *pRecv
 /* Below functions are frequently used in example code but not necessary for library */
 uint32_t  AD5940_GetMCUIntFlag(void);
 uint32_t  AD5940_ClrMCUIntFlag(void);
+void      AD5940_EnableMCUInt(void);
+void      AD5940_DisableMCUInt(void);
 uint32_t  AD5940_MCUResourceInit(void *pCfg);
 
 /**
