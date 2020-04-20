@@ -2834,8 +2834,8 @@ static uint32_t __AD5940_TakeMeasurement(int32_t *time_out)
 AD5940Err AD5940_ADCPGACal(ADCPGACal_Type *pADCPGACal)
 {
 /** @cond */
-#define VOLTSRC_GAIN1   0                 /* The standard voltage source for GAIN1 calibration. 0: internal -1.1 for gain, 1 : internal 0.8V for gain. 2: external 1.8V on CE0 */
-#define STDGAIN_FOR_GAIN49    ADCPGA_1    /* The standard gain. Use this gain to calibrate GAIN4 and GAIN9. Select from ADCPGA_1, ADCPGA_1P5 and ADCPGA_2 */
+#define VOLTSRC_GAIN1   1                 /* The standard voltage source for GAIN1 calibration. 0: internal -1.1 for gain, 1 : internal 0.8V for gain. 2: external 1.8V on CE0 */
+#define STDGAIN_FOR_GAIN49    ADCPGA_1P5  /* The standard gain. Use this gain to calibrate GAIN4 and GAIN9. Select from ADCPGA_1, ADCPGA_1P5 and ADCPGA_2 */
 #define __STDGAIN_VALUE       ((STDGAIN_FOR_GAIN49==ADCPGA_1)?1:\
                                 ((STDGAIN_FOR_GAIN49==ADCPGA_1P5)?1.5:\
                                 (STDGAIN_FOR_GAIN49==ADCPGA_2?2:4)))
@@ -2917,16 +2917,16 @@ AD5940Err AD5940_ADCPGACal(ADCPGACal_Type *pADCPGACal)
       ExpectedGainCode = (int32_t)(VoltForGainCal*2/VRef1p82*32768/kFactor + 0x8000);
       break;
     case ADCPGA_4:
-      regaddr_gain = REG_AFE_ADCGAINGN1P5;
-      regaddr_offset = REG_AFE_ADCOFFSETGN1P5;
+      regaddr_gain = REG_AFE_ADCGAINGN4;
+      regaddr_offset = REG_AFE_ADCOFFSETGN4;
       GainADCMuxPSel = ADCMUXP_P_NODE;  /* DAC reference 1.82V */
       GainADCMuxNSel = ADCMUXN_N_NODE;
 			/* Expected code is measured with GAIN1P5(or with GAIN1?). */
       HSDACCdoe = 0x800 + 0x300;  /* 0x300--> 0x300/0x1000*0.8*BUFFERGAIN2 = 0.3V. */
       break;
     case ADCPGA_9:
-      regaddr_gain = REG_AFE_ADCGAINGN1P5;
-      regaddr_offset = REG_AFE_ADCOFFSETGN1P5;
+      regaddr_gain = REG_AFE_ADCGAINGN9;
+      regaddr_offset = REG_AFE_ADCOFFSETGN9;
 
       GainADCMuxPSel = ADCMUXP_P_NODE;  /* DAC reference 1.82V */
       GainADCMuxNSel = ADCMUXN_N_NODE;
@@ -3436,7 +3436,7 @@ AD5940Err AD5940_LPRtiaCal(LPRTIACal_Type *pCalCfg, void *pResult)
   float ExcitVolt; /* Excitation voltage, unit is mV */
   uint32_t RtiaVal;
   /* RTIA value table when RLOAD set to 100Ohm */
-  uint32_t const LpRtiaTable[]={0,200,1000,2000,3000,4000,6000,8000,10000,12000,16000,20000,24000,30000,32000,40000,48000,64000,85000,96000,100000,120000,128000,160000,196000,256000,512000};
+  uint32_t const LpRtiaTable[]={0,110,1000,2000,3000,4000,6000,8000,10000,12000,16000,20000,24000,30000,32000,40000,48000,64000,85000,96000,100000,120000,128000,160000,196000,256000,512000};
   float const ADCPGAGainTable[] = {1, 1.5, 2, 4, 9};
   uint32_t WgAmpWord;
 
@@ -3686,7 +3686,7 @@ AD5940Err AD5940_LPRtiaCal(LPRTIACal_Type *pCalCfg, void *pResult)
     seqinfo.pSeqCmd = SeqTakeMeasurment;
     seqinfo.SeqId = SEQID_3;          /* We use SINC3 for calibration. */
     seqinfo.SeqLen = SEQ_LEN(SeqTakeMeasurment);
-    seqinfo.SeqRamAddr = 0;           /* */
+    seqinfo.SeqRamAddr = 512;           /* */
     seqinfo.WriteSRAM = bTRUE;
     AD5940_SEQInfoCfg(&seqinfo); 
 
