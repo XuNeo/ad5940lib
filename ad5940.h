@@ -33,12 +33,12 @@
 #define AD5940LIB_VER_PATCH       1    /**< Path number */
 #define AD5940LIB_VER   (AD5940LIB_VER_MAJOR<<16)|(AD5940LIB_VER_MINOR<<8)|(AD5940LIB_VER_PATCH)
 
-//#define ADI_DEBUG   /**< Comment this line to remove debug info. */
+#define ADI_DEBUG   /**< Comment this line to remove debug info. */
 
 #ifdef ADI_DEBUG
-#ifndef ADI_Print
 #define ADI_Print printf   /**< Select the method to print out debug message */
-#endif
+#else
+#define ADI_Print(n) (void*)
 #endif
 
 #if defined(CHIPSEL_M355) && defined(CHIPSEL_594X)
@@ -3585,7 +3585,7 @@
 #define ADCMUXP_VSE0                0xE     /**< Voltage of SE0 pin  */
 #define ADCMUXP_VSE1                0xF     /**< Voltage of SE1 pin on ADuCM355  */
 #define ADCMUXP_VAFE3               0xF     /**< Voltage of AFE3 pin on AD5940. */
-#define ADCMUXP_VREF2P5             0x10    /**< The internal 2.5V reference buffer output. */
+#define ADCMUXP_VREF2P5             0x10    /**< 1.25V. The internal 2.5V reference buffer output divided by 2. */
 #define ADCMUXP_VREF1P8DAC          0x12    /**< HSDAC 1.8V internal reference. It's only available when both AFECON.BIT20 and AFECON.BIT6 are set. */
 #define ADCMUXP_TEMPN               0x13    /**< Internal temperature output negative terminal */
 #define ADCMUXP_AIN4                0x14    /**< Voltage of AIN4/LPF0 pin  */
@@ -4259,9 +4259,9 @@ typedef struct
 {
   uint32_t ADCSinc3Osr;
   uint32_t ADCSinc2Osr;
-  uint32_t ADCAvgNum;           /**< Average filter is enabled when DFT source is @ref DFTSRC_AVG in function @ref AD5940_DFTCfgS. This average filter is only used by DFT engine. */
+  uint32_t ADCAvgNum;
   uint32_t ADCRate;             /**< ADC Core sample rate */
-  BoolFlag BpNotch;             /**< Bypass Notch filter in SINC2+Notch block, so only SINC2 is used. ADCFILTERCON.BIT4 */
+  BoolFlag BpNotch;             /**< Bypass Notch filter module. ADCFILTERCON.BIT4 */
   BoolFlag BpSinc3;             /**< Bypass SINC3 Module */
   BoolFlag Sinc2NotchEnable;    /**< Enable SINC2+Notch block */
 }ADCFilterCfg_Type;
